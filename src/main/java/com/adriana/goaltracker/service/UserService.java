@@ -9,32 +9,35 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository repo;
+    private final UserRepository repository;
 
-    public UserService(UserRepository repo) {
-        this.repo = repo;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
     }
 
     public List<User> getAll() {
-        return repo.findAll();
+        return repository.findAll();
     }
 
     public User getById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     public User create(User user) {
-        if (repo.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already used: " + user.getEmail());
-        }
-        return repo.save(user);
+        return repository.save(user);
+    }
+
+    public User update(Long id, User updatedUser) {
+        User existing = getById(id);
+
+        existing.setFullName(updatedUser.getFullName());
+        existing.setEmail(updatedUser.getEmail());
+
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
-        if (!repo.existsById(id)) {
-            throw new RuntimeException("User not found: " + id);
-        }
-        repo.deleteById(id);
+        repository.deleteById(id);
     }
 }

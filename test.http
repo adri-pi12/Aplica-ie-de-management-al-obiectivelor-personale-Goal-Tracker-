@@ -1,8 +1,17 @@
-### GET request to example server
+### Create first user
 POST http://localhost:8081/users
 Content-Type: application/json
 
 {
   "fullName": "Adriana Pisari",
   "email": "adriana@mail.com"
+}
+
+### Create second user
+POST http://localhost:8081/users
+Content-Type: application/json
+
+{
+  "fullName": "Maria Popa",
+  "email": "maria@mail.com"
 }
