@@ -2,6 +2,8 @@ package com.adriana.goaltracker.controller;
 
 import com.adriana.goaltracker.model.Habit;
 import com.adriana.goaltracker.service.HabitService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +19,28 @@ public class HabitController {
     }
 
     @GetMapping
-    public List<Habit> all() {
-        return service.getAll();
+    public ResponseEntity<List<Habit>> all() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public Habit one(@PathVariable Long id) {
-        return service.getById(id);
+    public ResponseEntity<Habit> one(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping("/user/{userId}")
-    public Habit create(@RequestBody Habit habit, @PathVariable Long userId) {
-        return service.create(habit, userId);
+    public ResponseEntity<Habit> create(@RequestBody Habit habit, @PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(habit, userId));
     }
 
     @PutMapping("/{id}")
-    public Habit update(@PathVariable Long id, @RequestBody Habit habit) {
-        return service.update(id, habit);
+    public ResponseEntity<Habit> update(@PathVariable Long id, @RequestBody Habit habit) {
+        return ResponseEntity.ok(service.update(id, habit));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

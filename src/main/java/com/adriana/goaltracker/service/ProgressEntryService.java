@@ -1,5 +1,6 @@
 package com.adriana.goaltracker.service;
 
+import com.adriana.goaltracker.exception.ResourceNotFoundException;
 import com.adriana.goaltracker.model.Goal;
 import com.adriana.goaltracker.model.ProgressEntry;
 import com.adriana.goaltracker.repository.GoalRepository;
@@ -25,12 +26,12 @@ public class ProgressEntryService {
 
     public ProgressEntry getById(Long id) {
         return progressEntryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ProgressEntry not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("ProgressEntry not found with id: " + id));
     }
 
     public ProgressEntry create(ProgressEntry progressEntry, Long goalId) {
         Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() -> new RuntimeException("Goal not found with id: " + goalId));
+                .orElseThrow(() -> new ResourceNotFoundException("Goal not found with id: " + goalId));
 
         progressEntry.setGoal(goal);
         return progressEntryRepository.save(progressEntry);
@@ -47,6 +48,7 @@ public class ProgressEntryService {
     }
 
     public void delete(Long id) {
-        progressEntryRepository.deleteById(id);
+        ProgressEntry existing = getById(id);
+        progressEntryRepository.delete(existing);
     }
 }

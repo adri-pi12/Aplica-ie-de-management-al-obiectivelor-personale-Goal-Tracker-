@@ -1,5 +1,6 @@
 package com.adriana.goaltracker.service;
 
+import com.adriana.goaltracker.exception.ResourceNotFoundException;
 import com.adriana.goaltracker.model.Habit;
 import com.adriana.goaltracker.model.User;
 import com.adriana.goaltracker.repository.HabitRepository;
@@ -25,12 +26,12 @@ public class HabitService {
 
     public Habit getById(Long id) {
         return habitRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Habit not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found with id: " + id));
     }
 
     public Habit create(Habit habit, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         habit.setUser(user);
         return habitRepository.save(habit);
@@ -47,6 +48,7 @@ public class HabitService {
     }
 
     public void delete(Long id) {
-        habitRepository.deleteById(id);
+        Habit existing = getById(id);
+        habitRepository.delete(existing);
     }
 }

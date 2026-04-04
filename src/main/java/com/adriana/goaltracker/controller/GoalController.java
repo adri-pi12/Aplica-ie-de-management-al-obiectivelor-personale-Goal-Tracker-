@@ -2,6 +2,8 @@ package com.adriana.goaltracker.controller;
 
 import com.adriana.goaltracker.model.Goal;
 import com.adriana.goaltracker.service.GoalService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +19,28 @@ public class GoalController {
     }
 
     @GetMapping
-    public List<Goal> all() {
-        return service.getAll();
+    public ResponseEntity<List<Goal>> all() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Goal> one(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @GetMapping("/test")
-    public String test() {
-        return "Goals  works!";
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Goals works!");
+    }
+
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<Goal> create(@RequestBody Goal goal, @PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(goal, userId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

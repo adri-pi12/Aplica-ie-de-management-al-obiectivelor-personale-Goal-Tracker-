@@ -1,5 +1,6 @@
 package com.adriana.goaltracker.service;
 
+import com.adriana.goaltracker.exception.ResourceNotFoundException;
 import com.adriana.goaltracker.model.Goal;
 import com.adriana.goaltracker.model.Milestone;
 import com.adriana.goaltracker.repository.GoalRepository;
@@ -25,12 +26,12 @@ public class MilestoneService {
 
     public Milestone getById(Long id) {
         return milestoneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Milestone not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone not found with id: " + id));
     }
 
     public Milestone create(Milestone milestone, Long goalId) {
         Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() -> new RuntimeException("Goal not found with id: " + goalId));
+                .orElseThrow(() -> new ResourceNotFoundException("Goal not found with id: " + goalId));
 
         milestone.setGoal(goal);
         return milestoneRepository.save(milestone);
@@ -47,6 +48,7 @@ public class MilestoneService {
     }
 
     public void delete(Long id) {
-        milestoneRepository.deleteById(id);
+        Milestone existing = getById(id);
+        milestoneRepository.delete(existing);
     }
 }
